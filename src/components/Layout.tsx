@@ -213,7 +213,7 @@ export const Layout = ({ children, title, onBack }: LayoutProps) => {
                       alignItems: 'center',
                       justifyContent: 'center',
                       p: 3,
-                      bgcolor: 'var(--core-lighthouse-colors-neutrals-white-alpha-42)',
+                      bgcolor: 'var(--core-lighthouse-colors-neutrals-black-alpha-42)',
                       border: '1px solid',
                       borderColor: 'divider',
                       borderRadius: 2,
@@ -232,7 +232,7 @@ export const Layout = ({ children, title, onBack }: LayoutProps) => {
                     <Box
                       className="menu-item-icon"
                       sx={{
-                        color: 'text.primary',
+                        color: 'var(--theme-base-primary-contrast-text)',
                         mb: 1,
                         transition: 'color 0.2s ease'
                       }}
@@ -243,7 +243,7 @@ export const Layout = ({ children, title, onBack }: LayoutProps) => {
                       variant="body2" 
                       className="menu-item-text"
                       sx={{
-                        color: 'text.primary',
+                        color: 'var(--theme-base-primary-contrast-text)',
                         textAlign: 'center',
                         fontWeight: 500,
                         transition: 'color 0.2s ease'

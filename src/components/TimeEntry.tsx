@@ -306,7 +306,7 @@ export const TimeEntry = ({ onSubmit, onBack, selectedDate, crewMembers, crewId 
       if (newEntries.length > 0) {
         const { error: insertError } = await supabase
           .from('time_entries')
-          .insert(newEntries, { returning: 'minimal' });
+          .insert(newEntries);
         
         if (insertError) {
           console.error('Error inserting time entries:', insertError);
@@ -453,6 +453,7 @@ export const TimeEntry = ({ onSubmit, onBack, selectedDate, crewMembers, crewId 
                     textField: {
                       fullWidth: true,
                       InputLabelProps: { shrink: true },
+                      sx: { bgcolor: 'var(--theme-base-background-elevations-level-5)' },
                     },
                   }}
                 />
@@ -466,6 +467,7 @@ export const TimeEntry = ({ onSubmit, onBack, selectedDate, crewMembers, crewId 
                     textField: {
                       fullWidth: true,
                       InputLabelProps: { shrink: true },
+                      sx: { bgcolor: 'var(--theme-base-background-elevations-level-5)' },
                     },
                   }}
                 />
@@ -495,6 +497,7 @@ export const TimeEntry = ({ onSubmit, onBack, selectedDate, crewMembers, crewId 
                           fullWidth: true,
                           size: 'small',
                           InputLabelProps: { shrink: true },
+                          sx: { bgcolor: 'var(--theme-base-background-elevations-level-5)' },
                         },
                       }}
                     />
@@ -509,6 +512,7 @@ export const TimeEntry = ({ onSubmit, onBack, selectedDate, crewMembers, crewId 
                           fullWidth: true,
                           size: 'small',
                           InputLabelProps: { shrink: true },
+                          sx: { bgcolor: 'var(--theme-base-background-elevations-level-5)' },
                         },
                       }}
                     />
@@ -544,7 +548,7 @@ export const TimeEntry = ({ onSubmit, onBack, selectedDate, crewMembers, crewId 
               border: '1px solid',
               borderColor: 'var(--theme-base-border-default)',
               borderRadius: 1,
-              bgcolor: 'background.paper',
+              bgcolor: 'var(--theme-base-background-elevations-level-5)',
               color: 'var(--theme-base-text-default)',
               fontFamily: 'inherit',
               fontSize: '14px',

@@ -378,7 +378,7 @@ const AdditionalDetails = () => {
 
           {editedIndividually ? (
             // Individual Member View - show each member separately
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 5 }}>
               {memberHours.length > 0 ? (
                 memberHours.map((member) => (
                   <Box
@@ -415,7 +415,7 @@ const AdditionalDetails = () => {
                       variant="caption"
                       sx={{ display: 'block', mb: 2, color: 'var(--theme-base-text-secondary)' }}
                     >
-                      Optional - Cannot exceed {member.hours.toFixed(1)} logged hours
+                      Cannot exceed {member.hours.toFixed(1)} logged hours
                     </Typography>
 
                     <Box sx={{ display: 'flex', gap: 2 }}>
@@ -434,7 +434,7 @@ const AdditionalDetails = () => {
                           error={isMemberOverLimit(member)}
                           sx={{
                             '& .MuiOutlinedInput-root': {
-                              bgcolor: 'var(--theme-base-components-input-filled-enabled-fill)',
+                              bgcolor: 'var(--theme-base-background-elevations-level-5)',
                             },
                           }}
                         />
@@ -455,7 +455,7 @@ const AdditionalDetails = () => {
                           error={isMemberOverLimit(member)}
                           sx={{
                             '& .MuiOutlinedInput-root': {
-                              bgcolor: 'var(--theme-base-components-input-filled-enabled-fill)',
+                              bgcolor: 'var(--theme-base-background-elevations-level-5)',
                             },
                           }}
                         />
@@ -476,7 +476,7 @@ const AdditionalDetails = () => {
                           error={isMemberOverLimit(member)}
                           sx={{
                             '& .MuiOutlinedInput-root': {
-                              bgcolor: 'var(--theme-base-components-input-filled-enabled-fill)',
+                              bgcolor: 'var(--theme-base-background-elevations-level-5)',
                             },
                           }}
                         />
@@ -502,9 +502,25 @@ const AdditionalDetails = () => {
                 </Typography>
               </Box>
 
-              <Alert severity={isOverLimit ? 'error' : 'info'} sx={{ mb: 3 }}>
+              <Alert
+                severity={isOverLimit ? 'error' : 'info'}
+                sx={{
+                  mb: 3,
+                  bgcolor: isOverLimit 
+                    ? 'var(--theme-base-feedback-error-main)'
+                    : 'var(--theme-base-feedback-info-main)',
+                  color: isOverLimit
+                    ? 'var(--theme-base-feedback-error-contrast-text)'
+                    : 'var(--theme-base-feedback-info-contrast-text)',
+                  '& .MuiAlert-icon': {
+                    color: isOverLimit
+                      ? 'var(--theme-base-feedback-error-contrast-text)'
+                      : 'var(--theme-base-feedback-info-contrast-text)'
+                  }
+                }}
+              >
                 {isOverLimit
-                  ? `Categories exceed total hours by ${(getTotalCategorized() - totalHours).toFixed(1)} hours`
+                  ? `Exceeds total hours by ${(getTotalCategorized() - totalHours).toFixed(1)} hours`
                   : `Remaining hours to categorize: ${getRemainingHours().toFixed(1)}`}
               </Alert>
 
@@ -538,7 +554,7 @@ const AdditionalDetails = () => {
                       error={isOverLimit}
                       sx={{
                         '& .MuiOutlinedInput-root': {
-                          bgcolor: 'var(--theme-base-components-input-filled-enabled-fill)',
+                          bgcolor: 'var(--theme-base-background-elevations-level-5)',
                         },
                       }}
                     />
@@ -562,7 +578,7 @@ const AdditionalDetails = () => {
                       error={isOverLimit}
                       sx={{
                         '& .MuiOutlinedInput-root': {
-                          bgcolor: 'var(--theme-base-components-input-filled-enabled-fill)',
+                          bgcolor: 'var(--theme-base-background-elevations-level-5)',
                         },
                       }}
                     />
@@ -586,7 +602,7 @@ const AdditionalDetails = () => {
                       error={isOverLimit}
                       sx={{
                         '& .MuiOutlinedInput-root': {
-                          bgcolor: 'var(--theme-base-components-input-filled-enabled-fill)',
+                          bgcolor: 'var(--theme-base-background-elevations-level-5)',
                         },
                       }}
                     />
@@ -611,7 +627,7 @@ const AdditionalDetails = () => {
               onChange={(e) => setNotes(e.target.value)}
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  bgcolor: 'var(--theme-base-components-input-filled-enabled-fill)',
+                  bgcolor: 'var(--theme-base-background-elevations-level-5)',
                 }
               }}
             />

@@ -827,9 +827,9 @@ export const ScheduleVerification = () => {
                     key={member.id}
                     label={member.name}
                     variant="outlined"
-                    color={'primary'}
+                    color={'default'}
                     sx={{
-                      backgroundColor: 'var(--core-lighthouse-colors-blues-slate-blue-100)',
+                      backgroundColor: 'var(--theme-base-background-elevations-highest)',
                       justifyContent: 'flex-start',
                     }}
                   />
