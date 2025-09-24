@@ -312,7 +312,7 @@ export const ScheduleVerification = () => {
             width: '100%', 
             maxWidth: 400,
             textAlign: 'center',
-            bgcolor: 'background.paper',
+            bgcolor: 'var(--theme-base-background-elevations-highest)',
             boxShadow: 3,
             position: 'relative'
           }}>
