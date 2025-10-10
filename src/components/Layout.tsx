@@ -129,7 +129,6 @@ export const Layout = ({ children, title, onBack }: LayoutProps) => {
           overflowX: 'hidden',
           overflowY: 'auto',
           WebkitOverflowScrolling: 'touch',
-          pb: 'calc(80px + env(safe-area-inset-bottom))', // Space for FAB with safe area
           bgcolor: 'var(--theme-base-background-elevations-level-4)',
           minHeight: 0
         }}
