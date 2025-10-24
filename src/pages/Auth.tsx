@@ -3,12 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, TextField, Button, Typography, Alert } from '@mui/material';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'react-toastify';
+import { z } from 'zod';
+
+const loginSchema = z.object({
+  username: z.string().trim().min(1, { message: "Username is required" }).max(100, { message: "Username must be less than 100 characters" }),
+  password: z.string().min(1, { message: "Password is required" })
+});
 
 export default function Auth() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<{ username?: string; password?: string }>({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,21 +31,53 @@ export default function Auth() {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setFieldErrors({});
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      // Validate input
+      const validationResult = loginSchema.safeParse({ username, password });
+      
+      if (!validationResult.success) {
+        const errors: { username?: string; password?: string } = {};
+        validationResult.error.errors.forEach((err) => {
+          if (err.path[0] === 'username') errors.username = err.message;
+          if (err.path[0] === 'password') errors.password = err.message;
+        });
+        setFieldErrors(errors);
+        setLoading(false);
+        return;
+      }
+
+      // Look up email from username
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('email')
+        .eq('username', validationResult.data.username)
+        .maybeSingle();
+
+      if (userError) {
+        throw new Error('Failed to verify username');
+      }
+
+      if (!userData) {
+        throw new Error('Invalid username or password');
+      }
+
+      // Authenticate with email and password
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email: userData.email,
+        password: validationResult.data.password,
       });
 
-      if (error) throw error;
+      if (authError) {
+        throw new Error('Invalid username or password');
+      }
 
       if (data.session) {
         toast.success('Successfully logged in!');
         navigate('/', { replace: true });
       }
     } catch (err: any) {
-      console.error('Login error:', err);
       setError(err.message || 'Failed to login');
     } finally {
       setLoading(false);
@@ -74,13 +113,15 @@ export default function Auth() {
           <form onSubmit={handleLogin}>
             <TextField
               fullWidth
-              label="Email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              label="Username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               margin="normal"
               required
-              autoComplete="email"
+              autoComplete="username"
+              error={!!fieldErrors.username}
+              helperText={fieldErrors.username}
             />
             <TextField
               fullWidth
@@ -91,6 +132,8 @@ export default function Auth() {
               margin="normal"
               required
               autoComplete="current-password"
+              error={!!fieldErrors.password}
+              helperText={fieldErrors.password}
             />
             <Button
               fullWidth
@@ -106,13 +149,10 @@ export default function Auth() {
 
           <Box sx={{ mt: 3, p: 2, bgcolor: 'action.hover', borderRadius: 1 }}>
             <Typography variant="caption" color="text.secondary" display="block" gutterBottom>
-              Test Accounts:
+              Test Usernames:
             </Typography>
             <Typography variant="caption" display="block" sx={{ fontFamily: 'monospace', fontSize: '0.7rem' }}>
-              admin@internal.test
-            </Typography>
-            <Typography variant="caption" display="block" sx={{ fontFamily: 'monospace', fontSize: '0.7rem' }}>
-              utility-admin@internal.test
+              Use the username from the users table
             </Typography>
           </Box>
         </CardContent>
