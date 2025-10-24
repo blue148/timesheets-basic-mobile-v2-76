@@ -1,8 +1,7 @@
-import { ScheduleVerification } from '@/components/ScheduleVerification';
+import { ScheduleVerification } from "@/components/ScheduleVerification";
 
 const Index = () => {
   return <ScheduleVerification />;
 };
-
 
 export default Index;
