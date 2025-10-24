@@ -23,13 +23,27 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useCrewData } from '@/hooks/useCrewData';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from 'react-toastify';
 
 const Account = () => {
   const navigate = useNavigate();
   const { loggedInMember, crewName } = useCrewData();
+  const { signOut } = useAuth();
 
   const handleBack = () => {
     navigate('/');
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      toast.success('Successfully signed out');
+      navigate('/auth', { replace: true });
+    } catch (error) {
+      console.error('Sign out error:', error);
+      toast.error('Failed to sign out');
+    }
   };
 
   const accountMenuItems = [
@@ -38,7 +52,7 @@ const Account = () => {
     { icon: <Notifications />, text: "Notifications", action: () => console.log("Notifications") },
     { icon: <Settings />, text: "App Preferences", action: () => console.log("Preferences") },
     { icon: <Help />, text: "Help & Support", action: () => console.log("Help") },
-    { icon: <ExitToApp />, text: "Sign Out", action: () => console.log("Sign Out") },
+    { icon: <ExitToApp />, text: "Sign Out", action: handleSignOut },
   ];
 
   return (

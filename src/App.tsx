@@ -2,7 +2,9 @@ import { ThemeProvider, createTheme, type ThemeOptions } from '@mui/material/sty
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useAuth } from "./hooks/useAuth";
+import React from 'react';
 import { HelmetProvider } from "react-helmet-async";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,6 +12,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import muiThemeJson from 'arcos-harmony-design-system/theme/mui-theme.json';
 import Index from "./pages/Index";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import AdditionalDetails from "./pages/AdditionalDetails";
 import Account from "./pages/Account";
@@ -17,7 +20,7 @@ import Convoys from "./pages/Convoys";
 import Assess from "./pages/Assess";
 import Repairs from "./pages/Repairs";
 import Expenses from "./pages/Expenses";
-import { Navigate } from "react-router-dom";
+
 
 const queryClient = new QueryClient();
 
@@ -76,6 +79,20 @@ const theme = createTheme(baseTheme, {
   },
 });
 
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return null;
+  }
+
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  return <>{children}</>;
+};
+
 const App = () => (
   <ThemeProvider theme={theme}>
     <CssBaseline />
@@ -128,14 +145,15 @@ const App = () => (
               <ToastContainer position="top-right" theme="dark" />
               <BrowserRouter>
                 <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/convoys" element={<Convoys />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+                  <Route path="/convoys" element={<ProtectedRoute><Convoys /></ProtectedRoute>} />
                   <Route path="/time-tracking" element={<Navigate to="/" replace />} />
-                  <Route path="/assess" element={<Assess />} />
-                  <Route path="/repairs" element={<Repairs />} />
-                  <Route path="/expenses" element={<Expenses />} />
-                  <Route path="/additional-details" element={<AdditionalDetails />} />
-                  <Route path="/account" element={<Account />} />
+                  <Route path="/assess" element={<ProtectedRoute><Assess /></ProtectedRoute>} />
+                  <Route path="/repairs" element={<ProtectedRoute><Repairs /></ProtectedRoute>} />
+                  <Route path="/expenses" element={<ProtectedRoute><Expenses /></ProtectedRoute>} />
+                  <Route path="/additional-details" element={<ProtectedRoute><AdditionalDetails /></ProtectedRoute>} />
+                  <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
