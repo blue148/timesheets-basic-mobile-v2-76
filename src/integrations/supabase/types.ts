@@ -10,7 +10,32 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "13.0.4"
+    PostgrestVersion: "14.5"
+  }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
   public: {
     Tables: {
@@ -232,6 +257,30 @@ export type Database = {
           },
         ]
       }
+      snapshots: {
+        Row: {
+          created_at: string
+          exceptions_data: Json
+          hours_breakdown_data: Json
+          id: string
+          time_entries_data: Json
+        }
+        Insert: {
+          created_at?: string
+          exceptions_data?: Json
+          hours_breakdown_data?: Json
+          id?: string
+          time_entries_data?: Json
+        }
+        Update: {
+          created_at?: string
+          exceptions_data?: Json
+          hours_breakdown_data?: Json
+          id?: string
+          time_entries_data?: Json
+        }
+        Relationships: []
+      }
       storm_events: {
         Row: {
           active: boolean | null
@@ -298,12 +347,15 @@ export type Database = {
           id: string
           location: string | null
           member_id: string | null
+          standby_hours: number | null
           start_time: string
           status: string
           submitted_at: string | null
           submitted_by: string | null
+          traveling_hours: number | null
           work_description: string | null
           work_package_id: string | null
+          working_hours: number | null
         }
         Insert: {
           comments?: string | null
@@ -317,12 +369,15 @@ export type Database = {
           id?: string
           location?: string | null
           member_id?: string | null
+          standby_hours?: number | null
           start_time: string
           status?: string
           submitted_at?: string | null
           submitted_by?: string | null
+          traveling_hours?: number | null
           work_description?: string | null
           work_package_id?: string | null
+          working_hours?: number | null
         }
         Update: {
           comments?: string | null
@@ -336,12 +391,15 @@ export type Database = {
           id?: string
           location?: string | null
           member_id?: string | null
+          standby_hours?: number | null
           start_time?: string
           status?: string
           submitted_at?: string | null
           submitted_by?: string | null
+          traveling_hours?: number | null
           work_description?: string | null
           work_package_id?: string | null
+          working_hours?: number | null
         }
         Relationships: [
           {
@@ -359,6 +417,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
       }
       users: {
         Row: {
@@ -380,7 +459,7 @@ export type Database = {
           full_name: string
           id: string
           last_login?: string | null
-          role: string
+          role?: string
           username: string
         }
         Update: {
@@ -456,10 +535,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      shift_time_entry_dates: {
+        Args: { days_to_add: number }
+        Returns: undefined
+      }
+      user_company_id: { Args: { _user_id: string }; Returns: string }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "utility" | "contractor" | "supervisor" | "editor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -585,7 +675,12 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  public: {
+  graphql_public: {
     Enums: {},
+  },
+  public: {
+    Enums: {
+      app_role: ["admin", "utility", "contractor", "supervisor", "editor"],
+    },
   },
 } as const
